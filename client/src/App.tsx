@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
+
 import {
   Code2,
   Users,
@@ -10,22 +12,52 @@ import {
 } from 'lucide-react'
 
 function App() {
+  const [backendStatus, setBackendStatus] = useState(
+    'Checking backend...',
+  )
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/health')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Backend request failed')
+        }
+
+        return response.json()
+      })
+      .then((result) => {
+        setBackendStatus(result.message)
+      })
+      .catch(() => {
+        setBackendStatus('Backend connection failed')
+      })
+  }, [])
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
 
       {/* Navbar */}
       <nav className="flex items-center justify-between border-b border-slate-800 px-8 py-5">
-        <Link to="/" className="flex items-center gap-2 text-xl font-bold">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-xl font-bold"
+        >
           <Code2 className="text-indigo-400" />
           DevConnect
         </Link>
 
         <div className="flex items-center gap-6">
-          <Link to="/" className="text-slate-300 hover:text-white">
+          <Link
+            to="/"
+            className="text-slate-300 hover:text-white"
+          >
             Home
           </Link>
 
-          <a href="#features" className="text-slate-300 hover:text-white">
+          <a
+            href="#features"
+            className="text-slate-300 hover:text-white"
+          >
             Features
           </a>
 
@@ -65,6 +97,21 @@ function App() {
           knowledge, and build meaningful connections in one place.
         </p>
 
+        {/* Backend Connection Status */}
+        <div className="mt-6 inline-block rounded-lg border border-slate-700 bg-slate-900 px-4 py-3 text-sm">
+          Backend Status:{' '}
+          <span
+            className={
+              backendStatus === 'DevConnect backend is healthy'
+                ? 'text-green-400'
+                : 'text-indigo-400'
+            }
+          >
+            {backendStatus}
+          </span>
+        </div>
+
+        {/* Hero Buttons */}
         <div className="mt-10 flex flex-wrap justify-center gap-4">
 
           <Link
@@ -88,7 +135,7 @@ function App() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Features Section */}
       <section
         id="features"
         className="mx-auto max-w-6xl px-8 pb-24"
@@ -130,6 +177,7 @@ function App() {
   )
 }
 
+// Feature Card Component
 function FeatureCard({
   icon,
   title,
