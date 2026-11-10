@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import developerRoutes from './routes/developer.routes.js';
+import authRoutes from './routes/auth.routes.js';
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,6 +30,7 @@ app.get('/api/health', (_req, res) => {
 });
 // Developer routes
 app.use('/api/developers', developerRoutes);
+app.use('/api/auth', authRoutes);
 app.listen(PORT, () => {
     console.log(`DevConnect server running at http://localhost:${PORT}`);
 });
